@@ -1,0 +1,14 @@
+{
+    "KPlugin": {
+        "Description": "PIAsimoV",
+        "Description[x-test]": "xxPIAsimoVxx",
+        "Id": "piasimov",
+        "Name": "PIAsimoV",
+        "Name[x-test]": "xxPIAsimoVxx",
+        "ServiceTypes": [
+            "KDevelop/Plugin"
+        ]
+    },
+    "X-KDevelop-Category": "Global",
+    "X-KDevelop-Mode": "GUI"
+}
