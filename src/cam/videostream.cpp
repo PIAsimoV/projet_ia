@@ -9,7 +9,7 @@
 #include <opencv2/dnn.hpp>
 #include <opencv2/imgproc.hpp>
 using namespace cv;
-using namespace dnn;
+//using namespace dnn;
 
 #include <cstdlib>
 #include <fstream>
@@ -65,17 +65,18 @@ int main()
 
     // [T] : La doc n'explique pas si c'est un chemin ou une reference a la lib
     // [T] : Donc ici je mets la version PATH...
-    String modelTxt = "../models/bvlc_alexnet/bvlc_alexnet.prototxt";
-    String modelBin = "../models/bvlc_alexnet/bvlc_alexnet.caffemodel";
+    //String modelTxt = "../models/bvlc_alexnet/bvlc_alexnet.prototxt";
+    //String modelBin = "../models/bvlc_alexnet/bvlc_alexnet.caffemodel";
 
     // [T] : ... et la, la version 'librairie'
     //std::string modelTxt = "bvlc_alexnet.prototxt";
     //std::string modelBin = "bvlc_alexnet.caffemodel";
 
     // [T] : Creation du 'net' du CNN depuis les fichiers CAFFE
-    dnn::Net net = dnn::readNetFromCaffe(modelTxt, modelBin);
+    //dnn::Net net = readNetFromCaffe(modelTxt, modelBin);
 
     // [T] : Provient de la doc, voici
+    /*
     if (net.empty())
     {
         std::cerr << "Impossible de charger le CNN deuis les fichiers suivants : " << std::endl;
@@ -83,6 +84,7 @@ int main()
         std::cerr << "caffemodel: " << modelBin << std::endl;
         exit(-1);
     }
+    */
 
     // Initialisation de la capture via la camera
     //capture = cvCreateFileCapture("http://169.254.203.145/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
@@ -109,24 +111,23 @@ int main()
 
 	    //On sauvegarde l'image
         //cvSaveImage("test.jpeg", image);
-        
+
         // Passage sous forme matricielle
-        Mat matImg = cvarrToMat(image);
+        //Mat matImg = cvarrToMat(image);
 
         /* Traitement dans le CNN */
         /* AlexNet et GoogleNet ne prennent que des RGB 224x224 */
-        cv::Mat inputBlob = cv::dnn::blobFromImage(matImg, 1, Size(224, 224),
-                                       Scalar(104, 117, 123)); //Convert Mat to batch of imagesnet.setInput(inputBlob, "data");         // On definit le label 'data' pour le CNN
-        cv::Mat prob = net.forward("prob");                        // Prediction
+        //Mat inputBlob = blobFromImage(matImg, 1, Size(227, 227),Scalar(104, 117, 123));
+        //Mat prob = net.forward("prob");
 
         // [T] : Alors la, je ne suis pas sur que ca marche avec AlexNet.
-        getMaxClass(prob, &classId, &classProb); // Recherche de la plus forte probabilite
-        std::vector<String> classNames = readClassNames("../models/bvlc_alexnet/synset_words.txt");
+        //getMaxClass(prob, &classId, &classProb); // Recherche de la plus forte probabilite
+        //std::vector<String> classNames = readClassNames("../models/bvlc_alexnet/synset_words.txt");
 
         // [T] : Pour l'instant, on affiche sur la sortie standard
-        std::cout << "-------------------" << std::endl;
-        std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
-        std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
+        //std::cout << "-------------------" << std::endl;
+        //std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
+        //std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
 
         // On attend 10ms
         key = cvWaitKey(10);
