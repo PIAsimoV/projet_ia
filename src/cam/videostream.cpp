@@ -8,23 +8,23 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/dnn.hpp>
 #include <opencv2/imgproc.hpp>
-using namespace cv;
-using namespace cv::dnn;
+//using namespace cv;
+//using namespace cv::dnn;
 
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
-using namespace std;
+//using namespace std;
 
 
 /* [T] : Voir Credits pour la source
 Find best class for the blob (i. e. class with maximal probability) */
-void getMaxClass(const Mat &probBlob, int *classId, double *classProb)
+void getMaxClass(const cv::Mat &probBlob, int *classId, double *classProb)
 {
-    Mat probMat = probBlob.reshape(1, 1); //reshape the blob to 1x1000 matrix
-    Point classNumber;
-    minMaxLoc(probMat, NULL, classProb, NULL, &classNumber);
+    cv::Mat probMat = probBlob.reshape(1, 1); //reshape the blob to 1x1000 matrix
+    cv::Point classNumber;
+    cv::minMaxLoc(probMat, NULL, classProb, NULL, &classNumber);
     *classId = classNumber.x;
 }
 
@@ -52,8 +52,8 @@ std::vector<String> readClassNames(const char *filename)
 
 int main()
 {
-    IplImage *image;    //Une frame
-    CvCapture *capture; //La capture
+    cv::IplImage *image;    //Une frame
+    cv::CvCapture *capture; //La capture
     char key;           //Un input keyboard
     int classId;        //ID classe pour le CNN
     double classProb;   //Probabilite de la prediction
@@ -73,7 +73,7 @@ int main()
     //std::string modelBin = "bvlc_alexnet.caffemodel";
 
     // [T] : Creation du 'net' du CNN depuis les fichiers CAFFE
-    Net net = dnn::readNetFromCaffe(modelTxt, modelBin);
+    cv::dnn:Net net = cv::dnn::readNetFromCaffe(modelTxt, modelBin);
 
     // [T] : Provient de la doc, voici
     if (net.empty())
@@ -85,7 +85,7 @@ int main()
     }
 
     // Initialisation de la capture via la camera
-    capture = cvCreateFileCapture("http://169.254.203.145/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
+    capture = cv::cvCreateFileCapture("http://169.254.203.145/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
     //capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
     //Si ça ne mache pas remplacer CV CAP ANY par 0
 
@@ -96,28 +96,28 @@ int main()
     }
 
     //Récupérer une image et l'afficher
-    cvNamedWindow("Window", CV_WINDOW_AUTOSIZE); //Créé une fenêtre
+    cv::cvNamedWindow("Window", CV_WINDOW_AUTOSIZE); //Créé une fenêtre
 
     //Affiche les images une par une
     while(key != 'q' && key != 'Q') {
 
         // On récupère une image
-        image = cvQueryFrame(capture);
+        image = cv::cvQueryFrame(capture);
 
         // On affiche l'image dans une fenêtre
-        cvShowImage("Window", image);
+        cv::cvShowImage("Window", image);
 
 	    //On sauvegarde l'image
         //cvSaveImage("test.jpeg", image);
         
         // Passage sous forme matricielle
-        Mat matImg = cvarrToMat(image);
+        cv::Mat matImg = cv::cvarrToMat(image);
 
         /* Traitement dans le CNN */
         /* AlexNet et GoogleNet ne prennent que des RGB 224x224 */
-        Mat inputBlob = blobFromImage(img, 1, Size(224, 224),
-                                       Scalar(104, 117, 123)); //Convert Mat to batch of imagesnet.setInput(inputBlob, "data");         // On definit le label 'data' pour le CNN
-        Mat prob = net.forward("prob");                        // Prediction
+        cv::Mat inputBlob = cv::dnn::blobFromImage(img, 1, Size(224, 224),
+                                       Scalar(104, 117, 123)); //Convert cv::Mat to batch of imagesnet.setInput(inputBlob, "data");         // On definit le label 'data' pour le CNN
+        cv::Mat prob = net.forward("prob");                        // Prediction
 
         // [T] : Alors la, je ne suis pas sur que ca marche avec AlexNet.
         getMaxClass(prob, &classId, &classProb); // Recherche de la plus forte probabilite
@@ -129,12 +129,12 @@ int main()
         std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
 
         // On attend 10ms
-        key = cvWaitKey(10);
+        key = cv::cvWaitKey(10);
     }
 
     //Ou CvDestroyWindow("Window") si on veut garder d'autres fenêtres
-    cvDestroyAllWindows();
-    cvReleaseCapture(&capture);
+    cv::cvDestroyAllWindows();
+    cv::cvReleaseCapture(&capture);
 
     return 0;
 }
