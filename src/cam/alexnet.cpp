@@ -117,6 +117,12 @@ int main()
 
         // On récupère une image
 	    matImg = imread("http://192.168.0.11/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg", CV_LOAD_IMAGE_COLOR);
+        if( matImg.empty() )                      // Check for invalid input
+        {
+            cout <<  "Could not open or find the image" << std::endl ;
+            return -1;
+        }
+
 
         resize(matImg, matImg, Size(227, 227));
         dnn::Blob inputBlob = dnn::Blob::fromImages(matImg);
@@ -132,6 +138,7 @@ int main()
         std::cout << "-------------------" << std::endl;
         std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
         std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
+
 
         // On affiche l'image dans une fenêtre
         imshow("AlexNet", matImg);
