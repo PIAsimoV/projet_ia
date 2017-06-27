@@ -53,8 +53,9 @@ std::vector<String> readClassNames(const char *filename)
 
 int main()
 {
-    Mat matImage;       //Une frame
-    //CvCapture *capture; //La capture
+    Mat matImage;       //Une image matricielle
+    IplImage image;     //Une frame
+    CvCapture *capture; //La capture
     char key;           //Un input keyboard
     int classId;        //ID classe pour le CNN
     double classProb;   //Probabilite de la prediction
@@ -99,7 +100,7 @@ int main()
     importer.release();
 
     // Initialisation de la capture via la camera
-    //capture = cvCreateFileCapture("http://192.168.0.11/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
+    capture = cvCreateFileCapture("http://192.168.0.11/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
     //capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
     //Si ça ne mache pas remplacer CV CAP ANY par 0
 
@@ -116,13 +117,8 @@ int main()
     while(key != 'q' && key != 'Q') {
 
         // On récupère une image
-	    matImg = imread("http://192.168.0.11/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg", CV_LOAD_IMAGE_COLOR);
-        if( matImg.empty() )                      // Check for invalid input
-        {
-            cout <<  "Could not open or find the image" << std::endl ;
-            return -1;
-        }
-
+        image = cvQueryFrame(capture);
+        matImg = cvarrToMat(image);
 
         resize(matImg, matImg, Size(227, 227));
         dnn::Blob inputBlob = dnn::Blob::fromImages(matImg);
