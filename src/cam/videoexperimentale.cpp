@@ -99,8 +99,8 @@ int main()
     importer.release();
 
     // Initialisation de la capture via la camera
-    //capture = cvCreateFileCapture("http://169.254.203.145/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
-    capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
+    capture = cvCreateFileCapture("http://192.168.0.11/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
+    //capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
     //Si ça ne mache pas remplacer CV CAP ANY par 0
 
     if (!capture) //Test l'ouverture du flux vidéo
@@ -122,7 +122,7 @@ int main()
         cvShowImage("Window", image);
 
 	    //On sauvegarde l'image
-        cvSaveImage("temp.jpeg", image);
+        cvSaveImage("temp.jpg", image);
 
         // Passage sous forme matricielle
         Mat matImg = imread("temp.jpg");
