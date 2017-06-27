@@ -110,7 +110,7 @@ int main()
     }
 
     //Récupérer une image et l'afficher
-    cvNamedWindow("Window", CV_WINDOW_AUTOSIZE); //Créé une fenêtre
+    cvNamedWindow("Window", WINDOW_NORMAL); //Créé une fenêtre
 
     //Affiche les images une par une
     while(key != 'q' && key != 'Q') {
@@ -122,17 +122,18 @@ int main()
         cvShowImage("Window", image);
 
 	    //On sauvegarde l'image
-        cvSaveImage("temp.jpg", image);
+        //cvSaveImage("temp.jpg", image);
 
         // Passage sous forme matricielle
-        Mat matImg = imread("temp.jpg");
-        if (matImg.empty())
-        {
-            std::cerr << "Impossible de lire l'image : " << imageFile << std::endl;
-            exit(-1);
-        }
+        //Mat matImg = imread("temp.jpg");
+        //if (matImg.empty())
+        //{
+        //    std::cerr << "Impossible de lire l'image : 'temp.jpg'" << std::endl;
+        //    exit(-1);
+        //}
+	Mat matImg = cvarrToMat(image);
         resize(matImg, matImg, Size(224, 224));
-        dnn::Blob inputBlob = dnn::Blob(matImg);
+        dnn::Blob inputBlob = dnn::Blob::fromImages(matImg);
         net.setBlob(".data", inputBlob);
         net.forward();
         dnn::Blob prob = net.getBlob("prob");
