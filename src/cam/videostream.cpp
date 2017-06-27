@@ -5,11 +5,11 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/videoio.hpp>
 #include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/dnn.hpp>
+#include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 using namespace cv;
-//using namespace dnn;
+using namespace cv::dnn;
 
 #include <cstdlib>
 #include <fstream>
@@ -20,10 +20,11 @@ using namespace std;
 
 /* [T] : Voir Credits pour la source
 Find best class for the blob (i. e. class with maximal probability) */
-void getMaxClass(const Mat &probBlob, int *classId, double *classProb)
+void getMaxClass(dnn::Blob  &probBlob, int *classId, double *classProb)
 {
-    Mat probMat = probBlob.reshape(1, 1); //reshape the blob to 1x1000 matrix
+    Mat probMat = probBlob.matRefConst(); //reshape the blob to 1x1000 matrix
     Point classNumber;
+
     minMaxLoc(probMat, NULL, classProb, NULL, &classNumber);
     *classId = classNumber.x;
 }
@@ -61,30 +62,41 @@ int main()
     /* Initialisation du CNN AlexNet */
 
     // [T] : Je ne sais pas comment on a installe la lib, donc je laisse ca ici
-    //dnn::initModule();  //Required if OpenCV is built as static libs
+    initModule();  //Required if OpenCV is built as static libs
 
     // [T] : La doc n'explique pas si c'est un chemin ou une reference a la lib
     // [T] : Donc ici je mets la version PATH...
-    //String modelTxt = "../models/bvlc_alexnet/bvlc_alexnet.prototxt";
-    //String modelBin = "../models/bvlc_alexnet/bvlc_alexnet.caffemodel";
+    String modelTxt = "models/bvlc_googlenet/bvlc_googlenet.prototxt";
+    String modelBin = "models/bvlc_googlenet/bvlc_googlenet.caffemodel";
 
     // [T] : ... et la, la version 'librairie'
     //std::string modelTxt = "bvlc_alexnet.prototxt";
     //std::string modelBin = "bvlc_alexnet.caffemodel";
 
-    // [T] : Creation du 'net' du CNN depuis les fichiers CAFFE
-    //dnn::Net net = readNetFromCaffe(modelTxt, modelBin);
-
-    // [T] : Provient de la doc, voici
-    /*
-    if (net.empty())
+    //! [Create the importer of Caffe model]
+    Ptr<dnn::Importer> importer;
+    try                                     //Try to import Caffe GoogleNet model
     {
-        std::cerr << "Impossible de charger le CNN deuis les fichiers suivants : " << std::endl;
+        importer = dnn::createCaffeImporter(modelTxt, modelBin);
+    }
+    catch (const cv::Exception &err)        //Importer can throw errors, we will catch them
+    {
+        std::cerr << err.msg << std::endl;
+    }
+    //! [Create the importer of Caffe model]
+
+    if (!importer)
+    {
+        std::cerr << "Can't load network by using the following files: " << std::endl;
         std::cerr << "prototxt:   " << modelTxt << std::endl;
         std::cerr << "caffemodel: " << modelBin << std::endl;
         exit(-1);
     }
-    */
+
+    // [T] : Creation du 'net' du CNN depuis les fichiers CAFFE
+    dnn::Net net;
+    importer->populateNet(net);
+    importer.release();
 
     // Initialisation de la capture via la camera
     //capture = cvCreateFileCapture("http://169.254.203.145/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
@@ -113,21 +125,21 @@ int main()
         //cvSaveImage("test.jpeg", image);
 
         // Passage sous forme matricielle
-        //Mat matImg = cvarrToMat(image);
-
-        /* Traitement dans le CNN */
-        /* AlexNet et GoogleNet ne prennent que des RGB 224x224 */
-        //Mat inputBlob = blobFromImage(matImg, 1, Size(227, 227),Scalar(104, 117, 123));
-        //Mat prob = net.forward("prob");
+        Mat matImg = cvarrToMat(image);
+        resize(matImg, matImg, Size(224, 224));
+        dnn::Blob inputBlob = dnn::Blob(matImg);
+        net.setBlob(".data", inputBlob);
+        net.forward();
+        dnn::Blob prob = net.getBlob("prob");
 
         // [T] : Alors la, je ne suis pas sur que ca marche avec AlexNet.
-        //getMaxClass(prob, &classId, &classProb); // Recherche de la plus forte probabilite
-        //std::vector<String> classNames = readClassNames("../models/bvlc_alexnet/synset_words.txt");
+        getMaxClass(prob, &classId, &classProb); // Recherche de la plus forte probabilite
+        std::vector<String> classNames = readClassNames("models/synset_words.txt");
 
         // [T] : Pour l'instant, on affiche sur la sortie standard
-        //std::cout << "-------------------" << std::endl;
-        //std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
-        //std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
+        std::cout << "-------------------" << std::endl;
+        std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
+        std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
 
         // On attend 10ms
         key = cvWaitKey(10);
