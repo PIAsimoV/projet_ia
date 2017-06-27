@@ -66,8 +66,8 @@ int main()
 
     // [T] : La doc n'explique pas si c'est un chemin ou une reference a la lib
     // [T] : Donc ici je mets la version PATH...
-    String modelTxt = "bvlc_googlenet.prototxt";
-    String modelBin = "bvlc_googlenet.caffemodel";
+    String modelTxt = "models/bvlc_googlenet/bvlc_googlenet.prototxt";
+    String modelBin = "models/bvlc_googlenet/bvlc_googlenet.caffemodel";
 
     // [T] : ... et la, la version 'librairie'
     //std::string modelTxt = "bvlc_alexnet.prototxt";
@@ -90,8 +90,6 @@ int main()
         std::cerr << "Can't load network by using the following files: " << std::endl;
         std::cerr << "prototxt:   " << modelTxt << std::endl;
         std::cerr << "caffemodel: " << modelBin << std::endl;
-        std::cerr << "bvlc_googlenet.caffemodel can be downloaded here:" << std::endl;
-        std::cerr << "http://dl.caffe.berkeleyvision.org/bvlc_googlenet.caffemodel" << std::endl;
         exit(-1);
     }
 
@@ -136,7 +134,7 @@ int main()
 
         // [T] : Alors la, je ne suis pas sur que ca marche avec AlexNet.
         getMaxClass(prob, &classId, &classProb); // Recherche de la plus forte probabilite
-        std::vector<String> classNames = readClassNames("synset_words.txt");
+        std::vector<String> classNames = readClassNames("models/synset_words.txt");
 
         // [T] : Pour l'instant, on affiche sur la sortie standard
         std::cout << "-------------------" << std::endl;
