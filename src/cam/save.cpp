@@ -13,6 +13,7 @@ using namespace std;
 
 int main()
 {
+    Mat      matImg;
     IplImage *image;    //Une frame
     CvCapture *capture; //La capture
     char key;           //Un input keyboard
@@ -29,7 +30,7 @@ int main()
     }
 
     //Récupérer une image et l'afficher
-    cvNamedWindow("Window", CV_WINDOW_AUTOSIZE); //Créé une fenêtre
+    namedWindow("Label", WINDOW_NORMAL); //Créé une fenêtre
 
     //Affiche les images une par une
     while(key != 'q' && key != 'Q') {
@@ -37,14 +38,19 @@ int main()
         // On récupère une image
         image = cvQueryFrame(capture);
 
-        // On affiche l'image dans une fenêtre
-        cvShowImage("Window", image);
+        // Conversion matricielle
+        matImg = cvarrToMat(image);
+        resize(matImg, matImg, Size(227, 227));
 
-	    //On sauvegarde l'image
-        //cvSaveImage("test.jpeg", image);
+        putText(matImg, "Label test\nSur\nplusieurs\nlignes", 
+            (0,0), FONT_HERSHEY_SIMPLEX, 4, (255,0,0));
 
+        // Affichage de la matrice
+        imshow("Label", matImg);
         // On attend 10ms
         key = cvWaitKey(10);
+
+
     }
 
     //Ou CvDestroyWindow("Window") si on veut garder d'autres fenêtres
