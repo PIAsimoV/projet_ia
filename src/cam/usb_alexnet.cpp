@@ -15,6 +15,7 @@ using namespace cv::dnn;
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
+#include <string>
 using namespace std;
 
 
@@ -57,14 +58,12 @@ void texte(Mat& image, const String& txt, int x, int y)
 
 int main()
 {
-    Mat mtImg;       //Une image matricielle
-    IplImage *image;     //Une frame
-    CvCapture *capture; //La capture
+    Mat matImg;       //Une image matricielle
     char key;           //Un input keyboard
     int classId;        //ID classe pour le CNN
     double classProb;   //Probabilite de la prediction
-    string s1 = new String();
-    string s2 = new String();
+    string s1;
+    string s2;
 
     /* Initialisation du CNN AlexNet */
 
@@ -99,15 +98,13 @@ int main()
     importer->populateNet(net);
     importer.release();
 
-    // Initialisation de la capture via la camera
-    //capture = cvCreateFileCapture("http://192.168.0.11/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
-    capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
-    //Si ça ne mache pas remplacer CV CAP ANY par 0
 
-    if (!capture) //Test l'ouverture du flux vidéo
+    // Initialisation de la capture par USB
+    VideoCapture cap(0);
+    if(!cap.isOpened())
     {
-        printf("Ouverture du flux vidéo impossible !\n");
-        return 1;
+        std::cout << "Erreur video" << std::endl;
+        return -1;
     }
 
     //Récupérer une image et l'afficher
@@ -116,29 +113,21 @@ int main()
     //Affiche les images une par une
     while(key != 'q' && key != 'Q') {
 
-        // Reinit des strings;
-
         // On récupère une image
-        image = cvQueryFrame(capture);
-        matImg = cvarrToMat(image);
+        cap >> matImg;
 
         resize(matImg, matImg, Size(227, 227));
+
         dnn::Blob inputBlob = dnn::Blob::fromImages(matImg);
         net.setBlob(".data", inputBlob);
         net.forward();
         dnn::Blob prob = net.getBlob("prob");
 
-        // [T] : Alors la, je ne suis pas sur que ca marche avec AlexNet.
         getMaxClass(prob, &classId, &classProb); // Recherche de la plus forte probabilite
         std::vector<String> classNames = readClassNames("models/synset_words.txt");
 
-        // [T] : Pour l'instant, on affiche sur la sortie standard
-        //std::cout << "-------------------" << std::endl;
-        //std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
-        //std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
-
         s1 = classNames.at(classId);
-        s2 = "Probabilite "+ to_string(classProb * 100) +" %";
+        s2 = "Probabilite " + std::to_string(classProb*100) + " %";
 
         texte(matImg, s1, 0, 15);
         texte(matImg, s2, 0, 35);
@@ -152,7 +141,6 @@ int main()
 
     //Ou CvDestroyWindow("Window") si on veut garder d'autres fenêtres
     cvDestroyAllWindows();
-    cvReleaseCapture(&capture);
 
     return 0;
 }

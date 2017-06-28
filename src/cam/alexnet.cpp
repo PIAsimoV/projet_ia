@@ -94,7 +94,8 @@ int main()
     importer.release();
 
     // Initialisation de la capture via la camera
-    capture = cvCreateFileCapture("http://192.168.0.11/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
+    capture = cvCreateFileCapture("http://192.168.43.14/mjpg/video.mjpg");
+    //capture = VideoCapture("http://192.168.43.14/mjpg/video.mjpg");
     //capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
     //Si ça ne mache pas remplacer CV CAP ANY par 0
 
