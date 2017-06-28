@@ -3,3 +3,8 @@ models/bvlc_alexnet/bvlc_alexnet.caffemodel
 models/bvlc_googlenet/bvlc_googlenet.caffemodel
 .DS_Store
 graphics/~$Presentation_projet_ia.pptx
+save
+minimale
+alexnet
+usb_alexnet
+googlenet

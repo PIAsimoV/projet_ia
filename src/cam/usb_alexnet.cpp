@@ -50,6 +50,10 @@ std::vector<String> readClassNames(const char *filename)
     return classNames;
 }
 
+void texte(Mat& image, const String& txt, int x, int y)
+{
+    putText(image, txt, Point(x,y), FONT_HERSHEY_SIMPLEX, 0.65, Scalar(0, 0, 255), 1,25);
+}
 
 int main()
 {
@@ -59,6 +63,8 @@ int main()
     char key;           //Un input keyboard
     int classId;        //ID classe pour le CNN
     double classProb;   //Probabilite de la prediction
+    string s1 = new String();
+    string s2 = new String();
 
     /* Initialisation du CNN AlexNet */
 
@@ -110,6 +116,8 @@ int main()
     //Affiche les images une par une
     while(key != 'q' && key != 'Q') {
 
+        // Reinit des strings;
+
         // On récupère une image
         image = cvQueryFrame(capture);
         matImg = cvarrToMat(image);
@@ -125,10 +133,15 @@ int main()
         std::vector<String> classNames = readClassNames("models/synset_words.txt");
 
         // [T] : Pour l'instant, on affiche sur la sortie standard
-        std::cout << "-------------------" << std::endl;
-        std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
-        std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
+        //std::cout << "-------------------" << std::endl;
+        //std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
+        //std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
 
+        s1 = classNames.at(classId);
+        s2 = "Probabilite "+ to_string(classProb * 100) +" %";
+
+        texte(matImg, s1, 0, 15);
+        texte(matImg, s2, 0, 35);
 
         // On affiche l'image dans une fenêtre
         imshow("AlexNet", matImg);
