@@ -42,8 +42,8 @@ int main()
         matImg = cvarrToMat(image);
         resize(matImg, matImg, Size(227, 227));
 
-        putText(matImg, "Label test\nSur\nplusieurs\nlignes", 
-            (0,0), FONT_HERSHEY_SIMPLEX, 4, (255,0,0));
+        putText(matImg, "Ligne 1", Point(0,15), FONT_HERSHEY_SIMPLEX, 0.70, (255, 0, 255));
+	putText(matImg, "Ligne 2", Point(0,35), FONT_HERSHEY_SIMPLEX, 0.70, (255, 0, 255));
 
         // Affichage de la matrice
         imshow("Label", matImg);
