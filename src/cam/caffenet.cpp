@@ -69,8 +69,8 @@ int main()
     // [T] : Je ne sais pas comment on a installe la lib, donc je laisse ca ici
     initModule();  //Required if OpenCV is built as static libs
 
-    String modelTxt = "models/bvlc_alexnet/bvlc_alexnet.prototxt";
-    String modelBin = "models/bvlc_alexnet/bvlc_alexnet.caffemodel";
+    String modelTxt = "models/bvlc_caffenet/bvlc_caffenet.prototxt";
+    String modelBin = "models/bvlc_caffenet/bvlc_caffenet.caffemodel";
 
     //! [Create the importer of Caffe model]
     Ptr<dnn::Importer> importer;

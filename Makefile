@@ -1,3 +1,6 @@
+caffenet:
+	g++ -std=c++11 -o caffenet src/cam/caffenet.cpp `pkg-config opencv --cflags --libs`
+
 minim:
 	g++ -std=c++11 -o minimale src/cam/minimale.cpp `pkg-config opencv --cflags --libs`
 
