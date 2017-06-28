@@ -50,15 +50,19 @@ std::vector<String> readClassNames(const char *filename)
     return classNames;
 }
 
+void texte(Mat& image, const String& txt, int x, int y)
+{
+    putText(image, txt, Point(x,y), FONT_HERSHEY_SIMPLEX, 0.65, Scalar(0, 0, 255), 1,25);
+}
 
 int main()
 {
     Mat matImg;       //Une image matricielle
-    IplImage *image;     //Une frame
-    CvCapture *capture; //La capture
     char key;           //Un input keyboard
     int classId;        //ID classe pour le CNN
     double classProb;   //Probabilite de la prediction
+    string s1;
+    string s2;
 
     /* Initialisation du CNN AlexNet */
 
@@ -94,15 +98,13 @@ int main()
     importer.release();
 
     // Initialisation de la capture via la camera
-    capture = cvCreateFileCapture("http://192.168.43.14/mjpg/video.mjpg");
-    //capture = VideoCapture("http://192.168.43.14/mjpg/video.mjpg");
-    //capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
-    //Si ça ne mache pas remplacer CV CAP ANY par 0
+    VideoCapture capture;
+    capture.open("http://192.168.43.14/mjpg/video.mjpg");
 
-    if (!capture) //Test l'ouverture du flux vidéo
+    if (!capture.isOpened()) //Test l'ouverture du flux vidéo
     {
         printf("Ouverture du flux vidéo impossible !\n");
-        return 1;
+        return -1;
     }
 
     //Récupérer une image et l'afficher
@@ -112,8 +114,7 @@ int main()
     while(key != 'q' && key != 'Q') {
 
         // On récupère une image
-        image = cvQueryFrame(capture);
-        matImg = cvarrToMat(image);
+        matImg = capture.read();
 
         resize(matImg, matImg, Size(227, 227));
         dnn::Blob inputBlob = dnn::Blob::fromImages(matImg);
@@ -125,11 +126,11 @@ int main()
         getMaxClass(prob, &classId, &classProb); // Recherche de la plus forte probabilite
         std::vector<String> classNames = readClassNames("models/synset_words.txt");
 
-        // [T] : Pour l'instant, on affiche sur la sortie standard
-        std::cout << "-------------------" << std::endl;
-        std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
-        std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
+        s1 = classNames.at(classId);
+        s2 = "Probabilite " + std::to_string(classProb*100) + " %";
 
+        texte(matImg, s1, 0, 15);
+        texte(matImg, s2, 0, 35);
 
         // On affiche l'image dans une fenêtre
         imshow("AlexNet", matImg);

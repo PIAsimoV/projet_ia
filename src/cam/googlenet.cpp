@@ -58,6 +58,8 @@ int main()
     char key;           //Un input keyboard
     int classId;        //ID classe pour le CNN
     double classProb;   //Probabilite de la prediction
+    string s1;
+    string s2;
 
     /* Initialisation du CNN AlexNet */
 
@@ -124,11 +126,11 @@ int main()
         getMaxClass(prob, &classId, &classProb); // Recherche de la plus forte probabilite
         std::vector<String> classNames = readClassNames("models/synset_words.txt");
 
-        // [T] : Pour l'instant, on affiche sur la sortie standard
-        std::cout << "-------------------" << std::endl;
-        std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
-        std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
+        s1 = classNames.at(classId);
+        s2 = "Probabilite " + std::to_string(classProb*100) + " %";
 
+        texte(matImg, s1, 0, 15);
+        texte(matImg, s2, 0, 35);
 
         // On affiche l'image dans une fenêtre
         imshow("Window", matImg);
