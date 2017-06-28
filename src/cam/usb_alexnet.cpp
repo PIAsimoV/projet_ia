@@ -114,7 +114,7 @@ int main()
     while(key != 'q' && key != 'Q') {
 
         // On récupère une image
-        cap >> matImg;
+        cap.read(matImg);
 
         resize(matImg, matImg, Size(227, 227));
 

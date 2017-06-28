@@ -50,11 +50,14 @@ std::vector<String> readClassNames(const char *filename)
     return classNames;
 }
 
+void texte(Mat& image, const String& txt, int x, int y)
+{
+    putText(image, txt, Point(x,y), FONT_HERSHEY_SIMPLEX, 0.65, Scalar(0, 0, 255), 1, 25);
+}
 
 int main()
 {
-    IplImage *image;    //Une frame
-    CvCapture *capture; //La capture
+    Mat matImg;
     char key;           //Un input keyboard
     int classId;        //ID classe pour le CNN
     double classProb;   //Probabilite de la prediction
@@ -95,14 +98,13 @@ int main()
     importer.release();
 
     // Initialisation de la capture via la camera
-    capture = cvCreateFileCapture("http://192.168.0.11/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
-    //capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
-    //Si ça ne mache pas remplacer CV CAP ANY par 0
+    VideoCapture capture;
+    capture.open("http://192.168.43.14/mjpg/video.mjpg");
 
-    if (!capture) //Test l'ouverture du flux vidéo
+    if (!capture.isOpened()) //Test l'ouverture du flux vidéo
     {
         printf("Ouverture du flux vidéo impossible !\n");
-        return 1;
+        return -1;
     }
 
     //Récupérer une image et l'afficher
@@ -111,11 +113,8 @@ int main()
     //Affiche les images une par une
     while(key != 'q' && key != 'Q') {
 
-        // On récupère une image
-        image = cvQueryFrame(capture);
-
         // Passage sous forme matricielle
-	    Mat matImg = cvarrToMat(image);
+	capture.read(matImg);
         resize(matImg, matImg, Size(224, 224));
         dnn::Blob inputBlob = dnn::Blob::fromImages(matImg);
         net.setBlob(".data", inputBlob);
@@ -141,7 +140,7 @@ int main()
 
     //Ou CvDestroyWindow("Window") si on veut garder d'autres fenêtres
     cvDestroyAllWindows();
-    cvReleaseCapture(&capture);
+    //cvReleaseCapture(&capture);
 
     return 0;
 }
