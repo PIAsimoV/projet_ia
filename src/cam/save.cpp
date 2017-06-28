@@ -11,6 +11,11 @@ using namespace cv;
 #include <stdio.h>
 using namespace std;
 
+void texte(Mat& image, const String& txt, int x, int x)
+{
+    putText(image, txt, Point(x,y), FONT_HERSHEY_SIMPLEX, 0.70, (255, 0, 255));
+}
+
 int main()
 {
     Mat      matImg;
@@ -42,8 +47,10 @@ int main()
         matImg = cvarrToMat(image);
         resize(matImg, matImg, Size(227, 227));
 
-        putText(matImg, "Ligne 1", Point(0,15), FONT_HERSHEY_SIMPLEX, 0.70, (255, 0, 255));
-	putText(matImg, "Ligne 2", Point(0,35), FONT_HERSHEY_SIMPLEX, 0.70, (255, 0, 255));
+        //putText(matImg, "Ligne 1", Point(0,15), FONT_HERSHEY_SIMPLEX, 0.70, (255, 0, 255));
+	    //putText(matImg, "Ligne 2", Point(0,35), FONT_HERSHEY_SIMPLEX, 0.70, (255, 0, 255));
+        texte(matImg, "Ligne 1", 0, 15);
+        texte(matImg, "Ligne 2", 0, 35);
 
         // Affichage de la matrice
         imshow("Label", matImg);
