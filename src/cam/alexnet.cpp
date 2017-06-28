@@ -53,8 +53,8 @@ std::vector<String> readClassNames(const char *filename)
 
 int main()
 {
-    Mat matImage;       //Une image matricielle
-    IplImage image;     //Une frame
+    Mat matImg;       //Une image matricielle
+    IplImage *image;     //Une frame
     CvCapture *capture; //La capture
     char key;           //Un input keyboard
     int classId;        //ID classe pour le CNN
