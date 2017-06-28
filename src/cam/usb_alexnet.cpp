@@ -53,7 +53,8 @@ std::vector<String> readClassNames(const char *filename)
 
 int main()
 {
-    IplImage *image;    //Une frame
+    Mat mtImg;       //Une image matricielle
+    IplImage *image;     //Une frame
     CvCapture *capture; //La capture
     char key;           //Un input keyboard
     int classId;        //ID classe pour le CNN
@@ -64,14 +65,8 @@ int main()
     // [T] : Je ne sais pas comment on a installe la lib, donc je laisse ca ici
     initModule();  //Required if OpenCV is built as static libs
 
-    // [T] : La doc n'explique pas si c'est un chemin ou une reference a la lib
-    // [T] : Donc ici je mets la version PATH...
-    String modelTxt = "models/bvlc_googlenet/bvlc_googlenet.prototxt";
-    String modelBin = "models/bvlc_googlenet/bvlc_googlenet.caffemodel";
-
-    // [T] : ... et la, la version 'librairie'
-    //std::string modelTxt = "bvlc_alexnet.prototxt";
-    //std::string modelBin = "bvlc_alexnet.caffemodel";
+    String modelTxt = "models/bvlc_alexnet/bvlc_alexnet.prototxt";
+    String modelBin = "models/bvlc_alexnet/bvlc_alexnet.caffemodel";
 
     //! [Create the importer of Caffe model]
     Ptr<dnn::Importer> importer;
@@ -99,8 +94,8 @@ int main()
     importer.release();
 
     // Initialisation de la capture via la camera
-    capture = cvCreateFileCapture("http://192.168.0.11/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
-    //capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
+    //capture = cvCreateFileCapture("http://192.168.0.11/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
+    capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
     //Si ça ne mache pas remplacer CV CAP ANY par 0
 
     if (!capture) //Test l'ouverture du flux vidéo
@@ -110,29 +105,16 @@ int main()
     }
 
     //Récupérer une image et l'afficher
-    cvNamedWindow("Window", WINDOW_NORMAL); //Créé une fenêtre
+    namedWindow("AlexNet", WINDOW_NORMAL); //Créé une fenêtre
 
     //Affiche les images une par une
     while(key != 'q' && key != 'Q') {
 
         // On récupère une image
         image = cvQueryFrame(capture);
+        matImg = cvarrToMat(image);
 
-        // On affiche l'image dans une fenêtre
-        cvShowImage("Window", image);
-
-	    //On sauvegarde l'image
-        //cvSaveImage("temp.jpg", image);
-
-        // Passage sous forme matricielle
-        //Mat matImg = imread("temp.jpg");
-        //if (matImg.empty())
-        //{
-        //    std::cerr << "Impossible de lire l'image : 'temp.jpg'" << std::endl;
-        //    exit(-1);
-        //}
-	Mat matImg = cvarrToMat(image);
-        resize(matImg, matImg, Size(224, 224));
+        resize(matImg, matImg, Size(227, 227));
         dnn::Blob inputBlob = dnn::Blob::fromImages(matImg);
         net.setBlob(".data", inputBlob);
         net.forward();
@@ -146,6 +128,10 @@ int main()
         std::cout << "-------------------" << std::endl;
         std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
         std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
+
+
+        // On affiche l'image dans une fenêtre
+        imshow("AlexNet", matImg);
 
         // On attend 10ms
         key = cvWaitKey(10);

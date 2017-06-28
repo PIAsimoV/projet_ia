@@ -53,8 +53,8 @@ std::vector<String> readClassNames(const char *filename)
 
 int main()
 {
-    Mat matImage;       //Une image matricielle
-    IplImage image;     //Une frame
+    Mat matImg;       //Une image matricielle
+    IplImage *image;     //Une frame
     CvCapture *capture; //La capture
     char key;           //Un input keyboard
     int classId;        //ID classe pour le CNN
@@ -65,14 +65,8 @@ int main()
     // [T] : Je ne sais pas comment on a installe la lib, donc je laisse ca ici
     initModule();  //Required if OpenCV is built as static libs
 
-    // [T] : La doc n'explique pas si c'est un chemin ou une reference a la lib
-    // [T] : Donc ici je mets la version PATH...
     String modelTxt = "models/bvlc_alexnet/bvlc_alexnet.prototxt";
     String modelBin = "models/bvlc_alexnet/bvlc_alexnet.caffemodel";
-
-    // [T] : ... et la, la version 'librairie'
-    //std::string modelTxt = "bvlc_alexnet.prototxt";
-    //std::string modelBin = "bvlc_alexnet.caffemodel";
 
     //! [Create the importer of Caffe model]
     Ptr<dnn::Importer> importer;

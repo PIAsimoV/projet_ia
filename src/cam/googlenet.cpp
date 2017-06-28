@@ -64,14 +64,8 @@ int main()
     // [T] : Je ne sais pas comment on a installe la lib, donc je laisse ca ici
     initModule();  //Required if OpenCV is built as static libs
 
-    // [T] : La doc n'explique pas si c'est un chemin ou une reference a la lib
-    // [T] : Donc ici je mets la version PATH...
     String modelTxt = "models/bvlc_googlenet/bvlc_googlenet.prototxt";
     String modelBin = "models/bvlc_googlenet/bvlc_googlenet.caffemodel";
-
-    // [T] : ... et la, la version 'librairie'
-    //std::string modelTxt = "bvlc_alexnet.prototxt";
-    //std::string modelBin = "bvlc_alexnet.caffemodel";
 
     //! [Create the importer of Caffe model]
     Ptr<dnn::Importer> importer;
@@ -99,8 +93,8 @@ int main()
     importer.release();
 
     // Initialisation de la capture via la camera
-    //capture = cvCreateFileCapture("http://169.254.203.145/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
-    capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
+    capture = cvCreateFileCapture("http://192.168.0.11/mjpg/video.mjpg?resolution=640x480&req_fps=10&.mjpg");
+    //capture = cvCreateCameraCapture(CV_CAP_ANY); //Ouvre le flux vidéo
     //Si ça ne mache pas remplacer CV CAP ANY par 0
 
     if (!capture) //Test l'ouverture du flux vidéo
@@ -110,7 +104,7 @@ int main()
     }
 
     //Récupérer une image et l'afficher
-    cvNamedWindow("Window", CV_WINDOW_AUTOSIZE); //Créé une fenêtre
+    namedWindow("Window", WINDOW_NORMAL); //Créé une fenêtre
 
     //Affiche les images une par une
     while(key != 'q' && key != 'Q') {
@@ -118,16 +112,10 @@ int main()
         // On récupère une image
         image = cvQueryFrame(capture);
 
-        // On affiche l'image dans une fenêtre
-        cvShowImage("Window", image);
-
-	    //On sauvegarde l'image
-        //cvSaveImage("test.jpeg", image);
-
         // Passage sous forme matricielle
-        Mat matImg = cvarrToMat(image);
+	    Mat matImg = cvarrToMat(image);
         resize(matImg, matImg, Size(224, 224));
-        dnn::Blob inputBlob = dnn::Blob(matImg);
+        dnn::Blob inputBlob = dnn::Blob::fromImages(matImg);
         net.setBlob(".data", inputBlob);
         net.forward();
         dnn::Blob prob = net.getBlob("prob");
@@ -140,6 +128,10 @@ int main()
         std::cout << "-------------------" << std::endl;
         std::cout << "Classe proposee : #" << classId << " '" << classNames.at(classId) << "'" << std::endl;
         std::cout << "Probabilite    : " << classProb * 100 << "%" << std::endl;
+
+
+        // On affiche l'image dans une fenêtre
+        imshow("Window", matImg);
 
         // On attend 10ms
         key = cvWaitKey(10);
