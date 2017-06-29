@@ -70,7 +70,7 @@ int main()
     initModule();  //Required if OpenCV is built as static libs
 
     String modelTxt = "models/bvlc_caffenet/bvlc_caffenet.prototxt";
-    String modelBin = "models/bvlc_caffenet/bvlc_caffenet.caffemodel";
+    String modelBin = "models/bvlc_caffenet/bvlc_reference_caffenet.caffemodel";
 
     //! [Create the importer of Caffe model]
     Ptr<dnn::Importer> importer;
