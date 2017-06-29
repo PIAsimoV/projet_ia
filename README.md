@@ -2,14 +2,14 @@
 
 # PIAsimoV - Deep-learning through Vision on RaspBerry PI
 
-**PIAsimoV** is a free, open-source project made by a small group of students as part of their training at the french engineering school **I.N.S.A Centre-Val-de-Loire**.
+**PIAsimoV** is a free, open-source project made by a small group of students as part of their course at the french engineering school **INSA Centre-Val-de-Loire**.
 
-This project was intended to analyse how well the a RaspBerry PI could perform a deep-learning work without any GPU. One is warned **not** to expect fluidity and performances, for the PI3 still has **limited** hardware performance.
+This project was intended to show how a RaspBerry PI performs with deep-learning without any GPU. One is warned **not** to expect fluidity and performances, for the PI3 still has **limited** hardware performance.
 
 **PIAsimoV IS CURRENTLY NO LONGER ACTIVE. WE DO NOT GUARENTEE ANY ANSWERS TO ANY QUESTIONS OR REQUESTS**
 ## Ressources and references
 
-We gladly thank these projects which ressources and documentation were useful for producing our work :
+We greatly thanks these projects which ressources and documentation were very useful for our work :
 
 * [BVLC/Caffenet framework for deep-learning](https://github.com/BVLC/caffe)
 * [Darknet/YOLO CNN project](https://github.com/pjreddie/darknet)
@@ -26,7 +26,7 @@ And of course some publications among others that were useful to understand Deep
 ## Installation guide
 
 #### Hardware requirements
-One can find here the materiel used during this project :
+One can find here the hardware used for this project :
 * RaspBerry PI 3 model B
 * Kuman Screen 3.5" for RaspBerry PI 
 * USB or WI-FI camera
@@ -36,12 +36,12 @@ One can find here the materiel used during this project :
 Although one does not need a GUI, it is recommended to install the latest version of RaspBian with the GUI extension to output the prediction on screen.
 * [OpenCV 3.1 or higher - Official guide](http://docs.opencv.org/master/df/d65/tutorial_table_of_content_introduction.html)
 
-The following projects are not required to ours but they are interesting to use in order to produce benchmarkings and comparisons. One should note that they both support / are supported by OpenCV
+The following projects are not required but they are interesting to use in order to produce benchmarkings and comparisons. One should note that they both support / are supported by OpenCV
 * [Optional] [Caffenet framework - Official guide](http://caffe.berkeleyvision.org/installation.html)
 * [Optional] [Darknet/YOLO - Official guide](https://pjreddie.com/darknet/install/)
 
 #### Downloading CNN  caffemodels
-In order to use a pre-trained CNN through OpenCV, one needs to download the dataset provided by **Caffenet**. Note that each caffemodel needs up 300 MB of free space for a total of **520 MB**.
+In order to use a pre-trained CNN through OpenCV, one needs to download the dataset provided by **Caffenet**. Note that each caffemodel needs from 300 MB up to **520 MB** of free space.
 
 Use the following commands in the root directory `projet_ia/` :
 ```bash
@@ -71,6 +71,6 @@ A simple Makefile was written to compile and execute the code. Here is a list of
 * `clean` : remove all existing binaries in the folder.
  
 
-**A WI-FI must be connected in order to execute correctly**. If **usb_alexnet** is used, then a simple USB camera can be used.
+**A WI-FI camera must be connected in order to ensure the code execute correctly**. If **usb_alexnet** is used, then a simple USB camera can be used.
 
-Finally, just use the wanted binary to execute the code. Warnings during execution are expected but do not worry (well, you should not be *that* worried).
+Finally, just use the wanted binary to execute the code. Warnings during execution are expected but do not worry as long as no errors shows up everything should work fine.
