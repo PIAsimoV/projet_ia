@@ -17,8 +17,8 @@ save:
 	g++ -std=c++11 -o save src/cam/save.cpp `pkg-config opencv --cflags --libs`
 
 clean:
-	rm save
-	rm minimale
-	rm alexnet
-	rm googlenet
-	rm usb_alexnet
+	-rm save
+	-rm minimale
+	-rm alexnet
+	-rm googlenet
+	-rm usb_alexnet
