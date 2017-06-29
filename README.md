@@ -60,7 +60,14 @@ All **prototxt** files were modified to adopt the **former** input_parameter lay
 
 ## Instruction guide
 
-The code is already written and can be found in the `src/cam` folder.
+The code is already written and can be found in the `src/cam` folder. You must however change one line in each code.
+
+At line 20, replace `PLEASE_FILL_ME` by your camera's address (IP or URL)
+```
+#define CAMERA_TO_USE PLEASE_FILL_ME
+```
+
+
 
 A simple Makefile was written to compile and execute the code. Here is a list of the usable options :
 * `alexnet` : compile the code as **alexnet** at root project and indicates that it should use the **alexnet** CNN ;
