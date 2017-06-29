@@ -1,4 +1,4 @@
-/* [Thanh] La partie concernant OpenCV-CNN est inspire du site officiel
+/* 
     Credits: http://docs.opencv.org/trunk/d5/de7/tutorial_dnn_googlenet.html
 */
 
@@ -17,8 +17,9 @@ using namespace cv::dnn;
 #include <stdio.h>
 using namespace std;
 
+#define CAMERA_TO_USE PLEASE_FILL_ME
 
-/* [T] : Voir Credits pour la source
+/* Please refer to credits
 Find best class for the blob (i. e. class with maximal probability) */
 void getMaxClass(dnn::Blob  &probBlob, int *classId, double *classProb)
 {
@@ -29,7 +30,7 @@ void getMaxClass(dnn::Blob  &probBlob, int *classId, double *classProb)
     *classId = classNumber.x;
 }
 
-/* [T] : Voir Credits pour la source */
+/* Please refer to credits */
 std::vector<String> readClassNames(const char *filename)
 {
     std::vector<String> classNames;
@@ -57,16 +58,15 @@ void texte(Mat& image, const String& txt, int x, int y)
 
 int main()
 {
-    Mat matImg;
-    char key;           //Un input keyboard
-    int classId;        //ID classe pour le CNN
-    double classProb;   //Probabilite de la prediction
+    Mat matImg;         // A matricial image
+    char key;           // Keyboard input
+    int classId;        // Class ID for the CNN
+    double classProb;   // Prediction probability
     string s1;
     string s2;
 
-    /* Initialisation du CNN AlexNet */
+    /* Initialization of GoogleNet CNN */
 
-    // [T] : Je ne sais pas comment on a installe la lib, donc je laisse ca ici
     initModule();  //Required if OpenCV is built as static libs
 
     String modelTxt = "models/bvlc_googlenet/bvlc_googlenet.prototxt";
@@ -92,14 +92,14 @@ int main()
         exit(-1);
     }
 
-    // [T] : Creation du 'net' du CNN depuis les fichiers CAFFE
+    // Initialization of CNN net from CAFFE files
     dnn::Net net;
     importer->populateNet(net);
     importer.release();
 
-    // Initialisation de la capture via la camera
+    // Initialization of the video camera flow
     VideoCapture capture;
-    capture.open("http://192.168.43.14/mjpg/video.mjpg");
+    capture.open(CAMERA_TO_USE);
 
     if (!capture.isOpened()) //Test l'ouverture du flux vidéo
     {
@@ -107,22 +107,23 @@ int main()
         return -1;
     }
 
-    //Récupérer une image et l'afficher
+    // Initialization of the window which will contains the picture
     namedWindow("Window", WINDOW_NORMAL); //Créé une fenêtre
 
-    //Affiche les images une par une
+    // While the key pressed is not q (for quit)
     while(key != 'q' && key != 'Q') {
 
-        // Passage sous forme matricielle
-	capture.read(matImg);
+        // Get the next frame received
+	    capture.read(matImg);
+
+        // AlexNet CNN network only accepts 224x224 pictures
         resize(matImg, matImg, Size(224, 224));
         dnn::Blob inputBlob = dnn::Blob::fromImages(matImg);
         net.setBlob(".data", inputBlob);
-        net.forward();
-        dnn::Blob prob = net.getBlob("prob");
+        net.forward(); // We launch the CNN
+        dnn::Blob prob = net.getBlob("prob"); // Retrieve the final prob
 
-        // [T] : Alors la, je ne suis pas sur que ca marche avec AlexNet.
-        getMaxClass(prob, &classId, &classProb); // Recherche de la plus forte probabilite
+        getMaxClass(prob, &classId, &classProb); // Retrieve the final prob
         std::vector<String> classNames = readClassNames("models/synset_words.txt");
 
         s1 = classNames.at(classId);
@@ -131,16 +132,12 @@ int main()
         texte(matImg, s1, 0, 15);
         texte(matImg, s2, 0, 35);
 
-        // On affiche l'image dans une fenêtre
         imshow("Window", matImg);
 
-        // On attend 10ms
         key = cvWaitKey(10);
     }
 
-    //Ou CvDestroyWindow("Window") si on veut garder d'autres fenêtres
     cvDestroyAllWindows();
-    //cvReleaseCapture(&capture);
 
     return 0;
 }
